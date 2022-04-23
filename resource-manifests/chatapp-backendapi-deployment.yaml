@@ -21,13 +21,21 @@ spec:
         app: chatapp-backend1
     spec:
       containers:
-      - image: shariullas/chat-app:api-v1
+      - image: shariullas/chat-app:api-v2
         imagePullPolicy: IfNotPresent
         name: chatapp-backend1
+        args:
+          - '/bin/chat-app'
         env:
-          - name: CHATAPP_HOST
-            value: "0.0.0.0"
-          - name: CHATAPP_API_PORT
-            value: "3000"
+          - name: CHATAPP_DB_USER_NAME
+            value: "chatapp"
+          - name: CHATAPP_DB_PASSWORD
+            value: "chatapp"
+          - name: CHATAPP_DB_HOST
+            value: "postgres"
+          - name: CHATAPP_DB_PORT
+            value: "5432"
+          - name: CHATAPP_DB_NAME
+            value: "chatapp_dev"
         ports:
-          - containerPort: 8080
+          - containerPort: 3000

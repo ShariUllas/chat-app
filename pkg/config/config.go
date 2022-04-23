@@ -17,7 +17,7 @@ type (
 		DBUserName string `envconfig:"db_user_name" default:"chatapp"`
 		DBPassword string `envconfig:"db_password" default:"chatapp"`
 		DBHost     string `envconfig:"db_host" default:"0.0.0.0"`
-		DBPort     string `envconfig:"db_port" default:":5432"`
+		DBPort     string `envconfig:"db_port" default:"5432"`
 		DBName     string `envconfig:"db_name" default:"chatapp_dev"`
 	}
 )
@@ -32,7 +32,7 @@ func New() *Config {
 }
 
 func (config *Config) GetDBConnectionString() string {
-	return fmt.Sprintf("postgres://%s:%s@%s%s/%s?sslmode=disable",
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		config.DBUserName,
 		config.DBPassword,
 		config.DBHost,
