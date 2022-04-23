@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatapp-backend1
+  labels:
+    app: chatapp-backend1
+spec:
+  selector:
+    matchLabels:
+      app: chatapp-backend1
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: chatapp-backend1
+    spec:
+      containers:
+      - image: shariullas/chat-app:api-v1
+        imagePullPolicy: IfNotPresent
+        name: chatapp-backend1
+        env:
+          - name: CHATAPP_HOST
+            value: "0.0.0.0"
+          - name: CHATAPP_API_PORT
+            value: "3000"
+        ports:
+          - containerPort: 8080

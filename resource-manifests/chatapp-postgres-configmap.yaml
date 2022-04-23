@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: chatapp_dev
+  POSTGRES_USER: chatapp
+  POSTGRES_PASSWORD: chatapp
