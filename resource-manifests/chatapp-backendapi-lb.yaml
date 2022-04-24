@@ -5,8 +5,13 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+  - name: "chatapp-rest"
+    port: 8000
     protocol: TCP
     targetPort: 3000
+  - name: "chatapp-socket"
+    port: 8080
+    protocol: TCP
+    targetPort: 3001
   selector:
     app: chatapp-backend1

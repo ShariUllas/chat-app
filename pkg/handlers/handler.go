@@ -39,6 +39,7 @@ func New(c *config.Config, service services.ChatAppService) *REST {
 	}
 }
 
-func (r *REST) Run() {
-	r.Engine.Run(net.JoinHostPort(r.config.Host, r.config.APIPort))
+func (r *REST) Run(host, port string) error {
+	r.Engine.Run(net.JoinHostPort(host, port))
+	return nil
 }

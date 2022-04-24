@@ -13,3 +13,5 @@ image:
 
 deploy:
 	kubectl apply -f ./resource-manifests
+
+build-image: chat-app image

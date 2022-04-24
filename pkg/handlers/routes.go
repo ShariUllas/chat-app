@@ -22,4 +22,5 @@ func NewChatAppController(service services.ChatAppService, cfg *config.Config, r
 		service: service,
 	}
 	router.ChatAppGroup.POST("/login", c.Login)
+	router.ChatAppGroup.POST("/signup", c.SignUp)
 }

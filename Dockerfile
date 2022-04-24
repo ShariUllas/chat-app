@@ -8,3 +8,5 @@ USER chatappuser
 LABEL maintainer="shariullas08@gmail.com"
 
 COPY /build/chat-app /bin/
+COPY ./migrations/ /tmp/migrations/
+COPY ./asset/ /tmp/asset/

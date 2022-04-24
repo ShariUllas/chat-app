@@ -9,20 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *ChatAppController) Login(ctx *gin.Context) {
-	req := &models.LoginRequest{}
+func (c *ChatAppController) SignUp(ctx *gin.Context) {
+	req := &models.SignUpRequest{}
 	err := json.NewDecoder(ctx.Request.Body).Decode(req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, "invalid request body")
 		return
 	}
-	users, err := c.service.Login(ctx, req)
+	userID, err := c.service.SignUp(ctx, req)
 	if err != nil {
-		log.Println("Login failed:", err)
+		log.Println("Signup failed:", err)
 		ctx.JSON(http.StatusInternalServerError, nil)
 		return
 	}
 	ctx.JSON(http.StatusOK, struct {
 		UserID int `json:"user_id"`
-	}{UserID: users.ID})
+	}{UserID: userID})
 }

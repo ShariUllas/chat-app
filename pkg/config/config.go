@@ -3,9 +3,13 @@ package config
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/lib/pq"
+	"github.com/mattes/migrate"
+	"github.com/mattes/migrate/database/postgres"
+	_ "github.com/mattes/migrate/source/file"
 	"github.com/pkg/errors"
 )
 
@@ -45,7 +49,12 @@ func (config *Config) GetDBConnection(connStr string) (*sql.DB, error) {
 	var db *sql.DB
 	var err error
 	sql.Register(dbServer, &pq.Driver{})
-	db, err = sql.Open(dbServer, connStr)
+	db, err = connectDB(connStr)
+	return db, err
+}
+
+func connectDB(connStr string) (*sql.DB, error) {
+	db, err := sql.Open(dbServer, connStr)
 	if err != nil {
 		return nil, err
 	}
@@ -56,4 +65,30 @@ func (config *Config) GetDBConnection(connStr string) (*sql.DB, error) {
 		)
 	}
 	return db, nil
+}
+
+func (config *Config) MigrateDB(connStr string, path string) {
+	db, err := connectDB(connStr)
+	if err != nil {
+		log.Fatalln(errors.Wrap(err, "migrate db failed"))
+	}
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		log.Fatalln(errors.Wrap(err, "failed to instantiate db migration driver"))
+	}
+	mig, err := migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", path), "postgres", driver)
+	if err != nil {
+		log.Fatalln(errors.Wrap(err, fmt.Sprintf("failed to instantiate migration instance: %s", path)))
+	}
+	if err := mig.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatalln(errors.Wrap(err, fmt.Sprintf("error while running initial migration up to setup db %s", path)))
+	}
+	err1, err2 := mig.Close()
+	if err1 != nil {
+		log.Fatalln(errors.Wrap(err1, fmt.Sprintf("could not close migrate source: %s", path)))
+	}
+	if err2 != nil {
+		log.Fatalln(errors.Wrap(err2, fmt.Sprintf("could not close migrate database: %s", path)))
+	}
+	log.Println("migrated")
 }
